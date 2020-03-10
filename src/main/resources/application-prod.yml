@@ -1,0 +1,63 @@
+# Tomcat
+server:
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 30
+    #日志配置
+    accesslog:
+      buffered: true
+      enabled: true
+      directory: /home/stock/logs/tomcat
+      file-date-format: yyyy-MM-dd
+      pattern: common
+      prefix: access_log
+      rename-on-rotate: false
+      request-attributes-enabled: false
+      rotate: true
+      suffix: .log
+  #端口配置
+  port: 8080
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    druid:
+      url: jdbc:mysql://127.0.0.1:3306/stock?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      username: stock
+      password: stock123
+      initial-size: 10
+      max-active: 100
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      #validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+
+
+wx:
+  mp:
+    configs:
+      - appId: wx9225ca6a47fa471a
+        secret: df7aa3d7e508f8c8b1dbb6bfdb63eb2e
+        token: wxcms
+        aesKey: R3Ccc2ul1CVJQQl048DKhTGrKwGOZX5yLBsYXwk2Prf
+
