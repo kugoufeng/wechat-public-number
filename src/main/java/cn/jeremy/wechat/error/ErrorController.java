@@ -1,4 +1,4 @@
-package cn.jeremy.stock.error;
+package cn.jeremy.wechat.error;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

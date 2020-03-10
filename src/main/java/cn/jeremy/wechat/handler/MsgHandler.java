@@ -1,7 +1,7 @@
-package cn.jeremy.stock.handler;
+package cn.jeremy.wechat.handler;
 
-import cn.jeremy.stock.builder.TextBuilder;
-import cn.jeremy.stock.utils.JsonUtils;
+import cn.jeremy.wechat.builder.TextBuilder;
+import cn.jeremy.wechat.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;

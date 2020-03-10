@@ -1,6 +1,6 @@
-package cn.jeremy.stock.handler;
+package cn.jeremy.wechat.handler;
 
-import cn.jeremy.stock.utils.JsonUtils;
+import cn.jeremy.wechat.utils.JsonUtils;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;

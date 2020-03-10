@@ -1,4 +1,4 @@
-package cn.jeremy.stock.controller;
+package cn.jeremy.wechat.controller;
 
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;

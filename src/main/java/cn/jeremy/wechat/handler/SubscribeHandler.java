@@ -1,6 +1,6 @@
-package cn.jeremy.stock.handler;
+package cn.jeremy.wechat.handler;
 
-import cn.jeremy.stock.builder.TextBuilder;
+import cn.jeremy.wechat.builder.TextBuilder;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;

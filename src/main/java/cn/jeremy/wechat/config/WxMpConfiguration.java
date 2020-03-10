@@ -1,15 +1,15 @@
-package cn.jeremy.stock.config;
+package cn.jeremy.wechat.config;
 
-import cn.jeremy.stock.handler.KfSessionHandler;
-import cn.jeremy.stock.handler.LocationHandler;
-import cn.jeremy.stock.handler.LogHandler;
-import cn.jeremy.stock.handler.MenuHandler;
-import cn.jeremy.stock.handler.MsgHandler;
-import cn.jeremy.stock.handler.NullHandler;
-import cn.jeremy.stock.handler.ScanHandler;
-import cn.jeremy.stock.handler.StoreCheckNotifyHandler;
-import cn.jeremy.stock.handler.SubscribeHandler;
-import cn.jeremy.stock.handler.UnsubscribeHandler;
+import cn.jeremy.wechat.handler.KfSessionHandler;
+import cn.jeremy.wechat.handler.LocationHandler;
+import cn.jeremy.wechat.handler.LogHandler;
+import cn.jeremy.wechat.handler.MenuHandler;
+import cn.jeremy.wechat.handler.MsgHandler;
+import cn.jeremy.wechat.handler.NullHandler;
+import cn.jeremy.wechat.handler.ScanHandler;
+import cn.jeremy.wechat.handler.StoreCheckNotifyHandler;
+import cn.jeremy.wechat.handler.SubscribeHandler;
+import cn.jeremy.wechat.handler.UnsubscribeHandler;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;

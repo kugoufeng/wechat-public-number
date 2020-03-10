@@ -1,6 +1,6 @@
-package cn.jeremy.stock.config;
+package cn.jeremy.wechat.config;
 
-import cn.jeremy.stock.utils.JsonUtils;
+import cn.jeremy.wechat.utils.JsonUtils;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

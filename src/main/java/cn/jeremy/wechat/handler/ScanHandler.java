@@ -1,4 +1,4 @@
-package cn.jeremy.stock.handler;
+package cn.jeremy.wechat.handler;
 
 import java.util.Map;
 

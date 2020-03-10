@@ -1,4 +1,4 @@
-package cn.jeremy.stock.utils;
+package cn.jeremy.wechat.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,4 +1,4 @@
-package cn.jeremy.stock.error;
+package cn.jeremy.wechat.error;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;

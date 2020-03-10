@@ -1,4 +1,4 @@
-package cn.jeremy.stock;
+package cn.jeremy.wechat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

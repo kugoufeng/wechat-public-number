@@ -23,7 +23,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     druid:
-      url: jdbc:mysql://192.168.109.131:3306/stock?useSSL=false&characterEncoding=utf8
+      url: jdbc:mysql://192.168.109.131:3306/stock?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
       username: kugoufeng
       password: fjtblt003
       initial-size: 10

@@ -1,4 +1,4 @@
-package cn.jeremy.stock.handler;
+package cn.jeremy.wechat.handler;
 
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
