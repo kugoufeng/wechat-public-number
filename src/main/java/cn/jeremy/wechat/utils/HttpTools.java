@@ -2,7 +2,6 @@ package cn.jeremy.wechat.utils;
 
 import cn.jeremy.wechat.bean.RequestElement;
 import cn.jeremy.wechat.stock.bean.HttpResult;
-import com.sun.javaws.exceptions.ExitException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
