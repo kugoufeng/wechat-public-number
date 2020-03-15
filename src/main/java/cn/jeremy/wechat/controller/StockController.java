@@ -36,4 +36,12 @@ public class StockController
         thsMockTrade.updateStockCloseData(num);
         return "success";
     }
+
+    @RequestMapping(value = "/genfile", method = RequestMethod.GET)
+    public String genfile()
+    {
+        thsMockTrade.genStockDayReport();
+        return "success";
+    }
+
 }

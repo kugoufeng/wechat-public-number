@@ -1,9 +1,9 @@
 package cn.jeremy.wechat.stock;
 
-import cn.jeremy.wechat.bean.RequestElement;
-import cn.jeremy.wechat.stock.bean.HttpResult;
-import cn.jeremy.wechat.utils.HttpTools;
-import cn.jeremy.wechat.utils.LoadRequestElement;
+import cn.jeremy.common.utils.HttpTools;
+import cn.jeremy.common.utils.bean.HttpResult;
+import cn.jeremy.common.utils.bean.LoadRequestElement;
+import cn.jeremy.common.utils.bean.RequestElement;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

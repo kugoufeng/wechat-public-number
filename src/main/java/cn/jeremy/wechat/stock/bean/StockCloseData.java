@@ -1,5 +1,6 @@
 package cn.jeremy.wechat.stock.bean;
 
+import cn.jeremy.common.utils.DateTools;
 import java.util.Date;
 
 /**
@@ -198,20 +199,20 @@ public class StockCloseData
     @Override
     public String toString()
     {
-        final StringBuffer sb = new StringBuffer("StockCloseData{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", num='").append(num).append('\'');
-        sb.append(", openPrice=").append(openPrice);
-        sb.append(", topPrice=").append(topPrice);
-        sb.append(", lowPrice=").append(lowPrice);
-        sb.append(", yestClosePrice=").append(yestClosePrice);
-        sb.append(", closePrice=").append(closePrice);
-        sb.append(", chg=").append(chg);
-        sb.append(", zlc=").append(zlc);
-        sb.append(", zlr=").append(zlr);
-        sb.append(", jr=").append(je);
-        sb.append(", today=").append(today);
-        sb.append('}');
+        final StringBuffer sb = new StringBuffer();
+        sb.append(name).append("\t");
+        sb.append(num).append("\t");
+        sb.append(openPrice).append("\t");
+        sb.append(topPrice).append("\t");
+        sb.append(lowPrice).append("\t");
+        sb.append(yestClosePrice).append("\t");
+        sb.append(closePrice).append("\t");
+        sb.append(chg).append("\t");
+        sb.append(zlc).append("\t");
+        sb.append(zlr).append("\t");
+        sb.append(je).append("\t");
+        sb.append(DateTools.date2TimeStr(today, DateTools.DATE_FORMAT_10)).append("\n");
         return sb.toString();
     }
+
 }

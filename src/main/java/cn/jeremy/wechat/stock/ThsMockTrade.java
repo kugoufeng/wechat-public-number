@@ -1,11 +1,12 @@
 package cn.jeremy.wechat.stock;
 
+import cn.jeremy.common.utils.DateTools;
+import cn.jeremy.common.utils.FileUtil;
+import cn.jeremy.common.utils.HttpTools;
+import cn.jeremy.common.utils.StringTools;
+import cn.jeremy.common.utils.bean.HttpResult;
 import cn.jeremy.wechat.stock.bean.BaseStockData;
-import cn.jeremy.wechat.stock.bean.HttpResult;
 import cn.jeremy.wechat.stock.bean.StockCloseData;
-import cn.jeremy.wechat.utils.DateTools;
-import cn.jeremy.wechat.utils.HttpTools;
-import cn.jeremy.wechat.utils.StringTools;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
@@ -69,6 +70,10 @@ public class ThsMockTrade implements Trade
     @Value("${ths.stock.trade.data.url}")
     private String stockTradeDataUrl;
 
+    @Value("${file.download.basepath}")
+    private String basePath;
+
+
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS `stock_%s` (\n" +
         "  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',\n" +
         "  `open_price` int(11) NOT NULL COMMENT '开盘价格，单位分',\n" +
@@ -96,6 +101,7 @@ public class ThsMockTrade implements Trade
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
 
     @Override
     public String getRequestCookie()
@@ -272,12 +278,14 @@ public class ThsMockTrade implements Trade
                             LOGGER.info("updateStockCloseData progress, {}/{}", i++, numList.size());
                             Thread.sleep(200);
                         }
+                        genStockDayReport();
                         LOGGER.info("updateStockCloseData over");
                     }
                     catch (Exception e)
                     {
                         LOGGER.error("updateStockCloseData has error, e:{}", e);
-                    }finally
+                    }
+                    finally
                     {
                         lock.unlock();
                     }
@@ -399,4 +407,55 @@ public class ThsMockTrade implements Trade
             return null;
         }
     }
+
+    /**
+     * 生成股票日报txt文件
+     *
+     * @author fengjiangtao
+     */
+    public void genStockDayReport()
+    {
+        List<BaseStockData> baseStockDataList = new ArrayList<>();
+        jdbcTemplate.query("select * from stock_base", new Object[] {}, (resultSet) -> {
+            BaseStockData baseStockData = new BaseStockData();
+            baseStockData.setName(resultSet.getString(1));
+            baseStockData.setNum(resultSet.getString(2));
+            baseStockDataList.add(baseStockData);
+        });
+        FileUtil.deleteDir(basePath.concat("raw"));
+        for (BaseStockData baseStockData : baseStockDataList)
+        {
+            genStockDayReport(baseStockData.getNum(), baseStockData.getName());
+        }
+
+    }
+
+    public void genStockDayReport(String num, String name)
+    {
+        String selectSql = String.format("select * from stock_%s ORDER BY today DESC", num);
+        List<StockCloseData> baseStockDataList = new ArrayList<>();
+        jdbcTemplate.query(selectSql, new Object[] {}, (resultSet) ->
+        {
+            StockCloseData stockCloseData = new StockCloseData(resultSet.getDate(11));
+            stockCloseData.setNum(num);
+            stockCloseData.setName(name);
+            stockCloseData.setOpenPrice(resultSet.getInt(2));
+            stockCloseData.setTopPrice(resultSet.getInt(3));
+            stockCloseData.setLowPrice(resultSet.getInt(4));
+            stockCloseData.setYestClosePrice(resultSet.getInt(5));
+            stockCloseData.setClosePrice(resultSet.getInt(6));
+            stockCloseData.setChg(resultSet.getInt(7));
+            stockCloseData.setZlc(resultSet.getInt(8));
+            stockCloseData.setZlr(resultSet.getInt(9));
+            stockCloseData.setJe(resultSet.getInt(10));
+            baseStockDataList.add(stockCloseData);
+        });
+        baseStockDataList.forEach(s -> {
+            s.setName(name);
+            s.setNum(num);
+            String filePath = basePath.concat("raw/").concat("raw_stock.txt");
+            FileUtil.writeFileFromString(filePath, s.toString(), true);
+        });
+    }
+
 }

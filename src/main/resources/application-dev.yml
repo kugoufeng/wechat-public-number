@@ -61,3 +61,9 @@ wx:
         token: wxcms
         aesKey: R3Ccc2ul1CVJQQl048DKhTGrKwGOZX5yLBsYXwk2Prf
 
+
+
+file:
+  download:
+    basepath: D:/data/stock/
+

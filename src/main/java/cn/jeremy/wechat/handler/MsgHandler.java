@@ -1,7 +1,10 @@
 package cn.jeremy.wechat.handler;
 
+import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
+
 import cn.jeremy.wechat.builder.TextBuilder;
-import cn.jeremy.wechat.utils.JsonUtils;
+import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -9,10 +12,6 @@ import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-
-import static me.chanjar.weixin.common.api.WxConsts.XmlMsgType;
 
 /**
  * @author Binary Wang(https://github.com/binarywang)
@@ -43,7 +42,7 @@ public class MsgHandler extends AbstractHandler {
         }
 
         //TODO 组装回复消息
-        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
+        String content = "收到信息内容：" + JSONObject.toJSONString(wxMessage);
 
         return new TextBuilder().build(content, wxMessage, weixinService);
 

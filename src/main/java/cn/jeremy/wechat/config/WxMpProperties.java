@@ -1,10 +1,9 @@
 package cn.jeremy.wechat.config;
 
-import cn.jeremy.wechat.utils.JsonUtils;
+import com.alibaba.fastjson.JSONObject;
+import java.util.List;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.List;
 
 /**
  * wechat mp properties
@@ -13,11 +12,13 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = "wx.mp")
-public class WxMpProperties {
+public class WxMpProperties
+{
     private List<MpConfig> configs;
 
     @Data
-    public static class MpConfig {
+    public static class MpConfig
+    {
         /**
          * 设置微信公众号的appid
          */
@@ -40,7 +41,8 @@ public class WxMpProperties {
     }
 
     @Override
-    public String toString() {
-        return JsonUtils.toJson(this);
+    public String toString()
+    {
+        return JSONObject.toJSONString(this);
     }
 }
