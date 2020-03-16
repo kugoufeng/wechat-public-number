@@ -34,42 +34,51 @@ public class CommonController
         {
             return "文件或者文件夹不存在";
         }
-
+        boolean isZip = false;
         if (FileUtil.isDir(file))
         {
             ZipUtil.zipFolder(file);
             file = file.concat(".zip");
             fileName = fileName.concat(".zip");
+            isZip = true;
         }
 
         response.reset();
         response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
-
+        InputStream is = null;
+        OutputStream os = null;
         try
         {
-            InputStream inStream = new FileInputStream(file);
-            OutputStream os = response.getOutputStream();
+            is = new FileInputStream(file);
+            os = response.getOutputStream();
 
             byte[] buff = new byte[1024];
             int len = -1;
-            while ((len = inStream.read(buff)) > 0)
+            while ((len = is.read(buff)) > 0)
             {
                 os.write(buff, 0, len);
             }
             os.flush();
-            os.close();
-            inStream.close();
         }
         catch (Exception e)
         {
             return "下载异常";
+        }
+        finally
+        {
+            FileUtil.closeIO(is, os);
+            //删除压缩文件
+            if (isZip)
+            {
+                FileUtil.deleteFile(file);
+            }
         }
 
         return "成功";
     }
 
     @PostMapping(value = "/upload")
-    public String logUpload(@RequestParam("file") MultipartFile file)
+    public String upload(@RequestParam("file") MultipartFile file)
         throws IOException
     {
         String originalFilename = file.getOriginalFilename();
@@ -77,7 +86,7 @@ public class CommonController
         file.transferTo(new File(outPath));
         if (originalFilename.endsWith(".zip"))
         {
-            ZipUtil.unZipFolder(outPath);
+            ZipUtil.unZipFolder(outPath, true);
         }
         return "success";
     }
