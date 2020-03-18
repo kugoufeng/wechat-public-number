@@ -1,5 +1,6 @@
 package cn.jeremy.wechat.controller;
 
+import cn.jeremy.wechat.service.StockDataHandlerService;
 import cn.jeremy.wechat.stock.ThsMockTrade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,9 @@ public class StockController
 {
     @Autowired
     ThsMockTrade thsMockTrade;
+
+    @Autowired
+    StockDataHandlerService stockDataHandlerService;
 
     @RequestMapping(value = "/updateAMarkStocks", method = RequestMethod.GET)
     public String updateAMarkStocks()
@@ -41,6 +45,13 @@ public class StockController
     public String genfile()
     {
         thsMockTrade.genStockDayReport();
+        return "success";
+    }
+
+    @RequestMapping(value = "/importData", method = RequestMethod.GET)
+    public String importData()
+    {
+        stockDataHandlerService.importData();
         return "success";
     }
 
