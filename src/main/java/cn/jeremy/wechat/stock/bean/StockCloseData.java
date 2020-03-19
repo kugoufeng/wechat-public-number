@@ -1,6 +1,8 @@
 package cn.jeremy.wechat.stock.bean;
 
 import cn.jeremy.common.utils.DateTools;
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -9,17 +11,9 @@ import java.util.Date;
  * @author fengjiangtao
  * @date 2020/2/27 21:29
  */
-public class StockCloseData
+@Data
+public class StockCloseData extends BaseStockData
 {
-    /**
-     * 股票名称
-     */
-    private String name;
-
-    /**
-     * 股票代号
-     */
-    private String num;
 
     /**
      * 股票开盘价格
@@ -71,128 +65,12 @@ public class StockCloseData
      */
     private Date today;
 
-    public StockCloseData(Date today)
-    {
+    public StockCloseData(Date today) {
         this.today = today;
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getNum()
-    {
-        return num;
-    }
-
-    public void setNum(String num)
-    {
-        this.num = num;
-    }
-
-    public int getOpenPrice()
-    {
-        return openPrice;
-    }
-
-    public void setOpenPrice(int openPrice)
-    {
-        this.openPrice = openPrice;
-    }
-
-    public int getTopPrice()
-    {
-        return topPrice;
-    }
-
-    public void setTopPrice(int topPrice)
-    {
-        this.topPrice = topPrice;
-    }
-
-    public int getLowPrice()
-    {
-        return lowPrice;
-    }
-
-    public void setLowPrice(int lowPrice)
-    {
-        this.lowPrice = lowPrice;
-    }
-
-    public int getYestClosePrice()
-    {
-        return yestClosePrice;
-    }
-
-    public void setYestClosePrice(int yestClosePrice)
-    {
-        this.yestClosePrice = yestClosePrice;
-    }
-
-    public int getClosePrice()
-    {
-        return closePrice;
-    }
-
-    public void setClosePrice(int closePrice)
-    {
-        this.closePrice = closePrice;
-    }
-
-    public int getChg()
-    {
-        return chg;
-    }
-
-    public void setChg(int chg)
-    {
-        this.chg = chg;
-    }
-
-    public int getZlc()
-    {
-        return zlc;
-    }
-
-    public void setZlc(int zlc)
-    {
-        this.zlc = zlc;
-    }
-
-    public int getZlr()
-    {
-        return zlr;
-    }
-
-    public void setZlr(int zlr)
-    {
-        this.zlr = zlr;
-    }
-
-    public int getJe()
-    {
-        return je;
-    }
-
-    public void setJe(int je)
-    {
-        this.je = je;
-    }
-
-    public Date getToday()
-    {
-        return today;
-    }
-
-    public void setToday(Date today)
-    {
+    public StockCloseData(String name, String num, Date today) {
+        super(name, num);
         this.today = today;
     }
 
@@ -200,8 +78,8 @@ public class StockCloseData
     public String toString()
     {
         final StringBuffer sb = new StringBuffer();
-        sb.append(name).append("\t");
-        sb.append(num).append("\t");
+        sb.append(getName()).append("\t");
+        sb.append(getNum()).append("\t");
         sb.append(openPrice).append("\t");
         sb.append(topPrice).append("\t");
         sb.append(lowPrice).append("\t");
