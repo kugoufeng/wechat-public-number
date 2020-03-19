@@ -11,10 +11,9 @@ public interface TextToDB<T> {
     /**
      * 分离指定目录下特定的文件
      *
-     * @param path
      * @return
      */
-    public List<File> getFilesFromPath(String path);
+    public List<File> getFilesFromPath();
 
     /**
      * 将文件内容转换为对象
@@ -22,7 +21,7 @@ public interface TextToDB<T> {
      * @param files
      * @return
      */
-    public List<T> filesToObject(List<File> files);
+    public List<T> filesToObjectList(List<File> files);
 
     /**
      * 将对象插入数据中
