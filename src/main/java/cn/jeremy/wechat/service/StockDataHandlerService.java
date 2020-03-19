@@ -43,9 +43,10 @@ public class StockDataHandlerService {
     private static final String INSERT_TO_DEMON_STOCK_SQL = "insert into demon_stock (num, name, select_date) values " +
             "(?, ?, ?)";
 
-    @Scheduled(cron = "0 34 23 ? * MON-FRI")
+    @Scheduled(cron = "0 31 17 ? * MON-FRI")
     public void importData() {
-        importDemonData();
+        String date = DateTools.date2TimeStr(new Date(), DateTools.DATE_FORMAT_10);
+        importDemonData(date);
     }
 
     /**
@@ -63,6 +64,12 @@ public class StockDataHandlerService {
         insertDemonStock(result);
     }
 
+    /**
+     * 将文本内容转换为对象列表
+     *
+     * @param files
+     * @return
+     */
     private List<SelectStockData> getDemonStokcDataFromFile(List<File> files) {
         if (!CollectionUtils.isEmpty(files)) {
             List<SelectStockData> result = new ArrayList<>();
@@ -88,6 +95,11 @@ public class StockDataHandlerService {
     }
 
 
+    /**
+     * 将对象数据插入demon_stock表中
+     *
+     * @param result
+     */
     private void insertDemonStock(List<SelectStockData> result) {
         if (!CollectionUtils.isEmpty(result)) {
             result.forEach(s -> {
