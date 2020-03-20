@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
+@Slf4j
 public abstract class BaseMrTextToDB<T> implements TextToDB<T> {
 
     String dateStr;
@@ -85,9 +87,11 @@ public abstract class BaseMrTextToDB<T> implements TextToDB<T> {
      * @author fengjiangtao
      */
     public void execInsertDB() {
+        log.info("begin execInsertDB()");
         List<File> files = getFilesFromPath();
         List<T> tList = filesToObjectList(files);
         insertDB(tList);
+        log.info("end execInsertDB()");
     }
 
     /**

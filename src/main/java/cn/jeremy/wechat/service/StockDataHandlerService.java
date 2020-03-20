@@ -32,7 +32,7 @@ public class StockDataHandlerService {
     private static final String INSERT_TO_DEMON_STOCK_SQL = "insert into demon_stock (num, name, select_date) values " +
             "(?, ?, ?)";
 
-    @Scheduled(cron = "0 0 18 ? * MON-FRI")
+    @Scheduled(cron = "0 31 18 ? * MON-FRI")
     public void importData() {
         String date = DateTools.date2TimeStr(new Date(), DateTools.DATE_FORMAT_10);
         new DemonStockMrTextToDB(date, jdbcTemplate, basePath).execInsertDB();
