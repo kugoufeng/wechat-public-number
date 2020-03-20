@@ -34,22 +34,22 @@ public class CountStockTradeData extends BaseStockData {
      */
     public void fillValue(String value) {
         if (StringUtils.isNotEmpty(value)) {
-            String[] split = value.split("|");
+            String[] split = value.split("\\|");
             if (ArrayUtils.isNotEmpty(split) && split.length == 2) {
                 int day = NumberUtils.toInt(split[0]);
                 int count = NumberUtils.toInt(split[1]);
                 if (day == 1) {
-                    setOneDayTrade(count);
+                    this.setOneDayTrade(count);
                 } else if (day == 3) {
-                    setThreeDayTrade(count);
+                    this.setThreeDayTrade(count);
                 } else if (day == 5) {
-                    setFiveDayTrade(count);
+                    this.setFiveDayTrade(count);
                 } else if (day == 10) {
-                    setTenDayTrade(count);
+                    this.setTenDayTrade(count);
                 } else if (day == 20) {
-                    setTwentyDayTrade(count);
+                    this. setTwentyDayTrade(count);
                 } else if (day > 0) {
-                    setOtherDayTrade(count);
+                    this.setOtherDayTrade(count);
                 }
             }
         }
