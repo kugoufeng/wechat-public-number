@@ -1,8 +1,11 @@
 package cn.jeremy.wechat.service;
 
 import cn.jeremy.common.utils.DateTools;
+import cn.jeremy.wechat.text.ContinuousStockFundMrTextToDB;
 import cn.jeremy.wechat.text.DemonStockMrTextToDB;
+
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,10 +32,11 @@ public class StockDataHandlerService {
     private static final String INSERT_TO_DEMON_STOCK_SQL = "insert into demon_stock (num, name, select_date) values " +
             "(?, ?, ?)";
 
-    @Scheduled(cron = "0 31 17 ? * MON-FRI")
+    @Scheduled(cron = "0 0 18 ? * MON-FRI")
     public void importData() {
         String date = DateTools.date2TimeStr(new Date(), DateTools.DATE_FORMAT_10);
-        new DemonStockMrTextToDB(date, basePath, jdbcTemplate).execInsertDB();
+        new DemonStockMrTextToDB(date, jdbcTemplate, basePath).execInsertDB();
+        new ContinuousStockFundMrTextToDB(date,jdbcTemplate,basePath).execInsertDB();
     }
 
 }
