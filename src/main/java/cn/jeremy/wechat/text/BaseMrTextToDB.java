@@ -44,9 +44,9 @@ public abstract class BaseMrTextToDB<T> implements TextToDB<T> {
             public boolean accept(File parentFile, String fileName)
             {
                 File grandParentFile = null;
-                if ((parentFile = parentFile.getParentFile()) != null)
+                if ((grandParentFile = parentFile.getParentFile()) != null)
                 {
-                    return dateStr.equals(parentFile.getName()) && getFileTag().equals(parentFile.getName()) &&
+                    return dateStr.equals(grandParentFile.getName()) && getFileTag().equals(parentFile.getName()) &&
                             fileName.equals(FILE_NAME);
                 }
                 return false;
