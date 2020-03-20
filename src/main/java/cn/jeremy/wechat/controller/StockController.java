@@ -2,6 +2,8 @@ package cn.jeremy.wechat.controller;
 
 import cn.jeremy.wechat.service.StockDataHandlerService;
 import cn.jeremy.wechat.stock.ThsMockTrade;
+import cn.jeremy.wechat.stock.bean.SelectStockData;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +55,12 @@ public class StockController
     {
         stockDataHandlerService.importData();
         return "success";
+    }
+
+    @RequestMapping(value = "/queryNearestDemonStock", method = RequestMethod.GET)
+    public List<SelectStockData> queryNearestDemonStock()
+    {
+        return stockDataHandlerService.queryNearestDemonStock();
     }
 
 }
