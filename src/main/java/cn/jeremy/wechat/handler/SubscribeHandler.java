@@ -1,8 +1,10 @@
 package cn.jeremy.wechat.handler;
 
 import cn.jeremy.wechat.builder.TextBuilder;
+import cn.jeremy.wechat.service.WxMpUserService;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -18,6 +20,9 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
 @Component
 public class SubscribeHandler extends AbstractHandler {
 
+    @Autowired
+    WxMpUserService wxMpUserService;
+
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService weixinService,
@@ -30,7 +35,7 @@ public class SubscribeHandler extends AbstractHandler {
             WxMpUser userWxInfo = weixinService.getUserService()
                 .userInfo(wxMessage.getFromUser(), null);
             if (userWxInfo != null) {
-                // TODO 可以添加关注用户到本地数据库
+                wxMpUserService.insertOrUpdate(new cn.jeremy.wechat.entity.WxMpUser(userWxInfo));
             }
         } catch (WxErrorException e) {
             if (e.getError().getErrorCode() == 48001) {

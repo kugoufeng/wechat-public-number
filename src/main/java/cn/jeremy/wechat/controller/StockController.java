@@ -1,5 +1,6 @@
 package cn.jeremy.wechat.controller;
 
+import cn.jeremy.wechat.service.ApiAuthorityService;
 import cn.jeremy.wechat.service.StockDataHandlerService;
 import cn.jeremy.wechat.stock.ThsMockTrade;
 import cn.jeremy.wechat.entity.DemonStock;
@@ -19,6 +20,9 @@ public class StockController
 
     @Autowired
     StockDataHandlerService stockDataHandlerService;
+
+    @Autowired
+    ApiAuthorityService apiAuthorityService;
 
     @RequestMapping(value = "/updateAMarkStocks", method = RequestMethod.GET)
     public String updateAMarkStocks()
@@ -68,6 +72,13 @@ public class StockController
     {
         List<DemonStock> demonStockData = stockDataHandlerService.queryNearestDemonStock();
         return stockDataHandlerService.genDemonStockPic(demonStockData);
+    }
+
+    @RequestMapping(value = "/addLeftNum/{userId}", method = RequestMethod.GET)
+    public String addLeftNum(@PathVariable Integer userId)
+    {
+        int count = apiAuthorityService.addLeftNum(userId, 1);
+        return count == 1 ? "success" : "failed";
     }
 
 }
