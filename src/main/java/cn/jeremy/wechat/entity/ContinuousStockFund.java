@@ -1,4 +1,4 @@
-package cn.jeremy.wechat.stock.bean;
+package cn.jeremy.wechat.entity;
 
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @Data
-public class CountStockTradeData extends BaseStockData {
+public class ContinuousStockFund extends BaseStockData {
 
     private Integer oneDayTrade;
 
@@ -20,10 +20,10 @@ public class CountStockTradeData extends BaseStockData {
 
     private Integer otherDayTrade;
 
-    public CountStockTradeData() {
+    public ContinuousStockFund() {
     }
 
-    public CountStockTradeData(String name, String num) {
+    public ContinuousStockFund(String name, String num) {
         super(name, num);
     }
 

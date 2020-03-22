@@ -1,6 +1,7 @@
 package cn.jeremy.wechat.stock.bean;
 
 import cn.jeremy.common.utils.DateTools;
+import cn.jeremy.wechat.entity.BaseStockData;
 import lombok.Data;
 
 import java.util.Date;

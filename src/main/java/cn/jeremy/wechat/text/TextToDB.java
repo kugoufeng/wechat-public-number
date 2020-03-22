@@ -28,7 +28,7 @@ public interface TextToDB<T> {
      *
      * @param list
      */
-    public void insertDB(List<T> list);
+    public int insertDB(List<T> list);
 
     /**
      * 将行数据转换为对象

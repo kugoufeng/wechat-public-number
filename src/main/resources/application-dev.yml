@@ -67,3 +67,6 @@ file:
   download:
     basepath: D:/data/stock/
 
+temp:
+  path: D:/data/temp/
+

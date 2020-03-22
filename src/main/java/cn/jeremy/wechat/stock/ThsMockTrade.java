@@ -5,7 +5,7 @@ import cn.jeremy.common.utils.FileUtil;
 import cn.jeremy.common.utils.HttpTools;
 import cn.jeremy.common.utils.StringTools;
 import cn.jeremy.common.utils.bean.HttpResult;
-import cn.jeremy.wechat.stock.bean.BaseStockData;
+import cn.jeremy.wechat.entity.BaseStockData;
 import cn.jeremy.wechat.stock.bean.StockCloseData;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;

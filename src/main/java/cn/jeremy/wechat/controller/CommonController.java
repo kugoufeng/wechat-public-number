@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletResponse;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class CommonController
         String file = basePath.concat(fileName);
         if (!FileUtil.isFileExists(file))
         {
+            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             return "文件或者文件夹不存在";
         }
         boolean isZip = false;
@@ -62,6 +64,7 @@ public class CommonController
         }
         catch (Exception e)
         {
+            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             return "下载异常";
         }
         finally

@@ -66,3 +66,6 @@ wx:
 file:
   download:
     basepath: /home/stock/data/
+
+temp:
+  path: /home/stock/temporary/

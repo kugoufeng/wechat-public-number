@@ -86,12 +86,13 @@ public abstract class BaseMrTextToDB<T> implements TextToDB<T> {
      * @throws
      * @author fengjiangtao
      */
-    public void execInsertDB() {
+    public int execInsertDB() {
         log.info("begin execInsertDB()");
         List<File> files = getFilesFromPath();
         List<T> tList = filesToObjectList(files);
-        insertDB(tList);
+        int count = insertDB(tList);
         log.info("end execInsertDB()");
+        return count;
     }
 
     /**

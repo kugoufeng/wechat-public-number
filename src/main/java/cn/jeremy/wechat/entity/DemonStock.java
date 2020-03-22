@@ -1,22 +1,24 @@
-package cn.jeremy.wechat.stock.bean;
+package cn.jeremy.wechat.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class SelectStockData extends BaseStockData {
+public class DemonStock extends BaseStockData {
 
+    @JSONField(format = "yyyy-MM-dd")
     private Date selectDate;
 
-    public SelectStockData() {
+    public DemonStock() {
     }
 
-    public SelectStockData(Date selectDate) {
+    public DemonStock(Date selectDate) {
         this.selectDate = selectDate;
     }
 
-    public SelectStockData(String name, String num, Date selectDate) {
+    public DemonStock(String name, String num, Date selectDate) {
         super(name, num);
         this.selectDate = selectDate;
     }

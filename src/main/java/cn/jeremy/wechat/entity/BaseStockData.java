@@ -1,10 +1,11 @@
-package cn.jeremy.wechat.stock.bean;
+package cn.jeremy.wechat.entity;
 
 import lombok.Data;
 
 @Data
 public class BaseStockData
 {
+    private Integer id;
     /**
      * 股票名称
      */
@@ -29,7 +30,8 @@ public class BaseStockData
     public String toString()
     {
         final StringBuffer sb = new StringBuffer("BaseStockData{");
-        sb.append("name='").append(name).append('\'');
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
         sb.append(", num='").append(num).append('\'');
         sb.append('}');
         return sb.toString();

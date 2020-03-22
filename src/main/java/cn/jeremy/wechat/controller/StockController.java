@@ -2,7 +2,7 @@ package cn.jeremy.wechat.controller;
 
 import cn.jeremy.wechat.service.StockDataHandlerService;
 import cn.jeremy.wechat.stock.ThsMockTrade;
-import cn.jeremy.wechat.stock.bean.SelectStockData;
+import cn.jeremy.wechat.entity.DemonStock;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,9 +58,16 @@ public class StockController
     }
 
     @RequestMapping(value = "/queryNearestDemonStock", method = RequestMethod.GET)
-    public List<SelectStockData> queryNearestDemonStock()
+    public List<DemonStock> queryNearestDemonStock()
     {
         return stockDataHandlerService.queryNearestDemonStock();
+    }
+
+    @RequestMapping(value = "/genDemonStockPic", method = RequestMethod.GET)
+    public String genDemonStockPic()
+    {
+        List<DemonStock> demonStockData = stockDataHandlerService.queryNearestDemonStock();
+        return stockDataHandlerService.genDemonStockPic(demonStockData);
     }
 
 }
