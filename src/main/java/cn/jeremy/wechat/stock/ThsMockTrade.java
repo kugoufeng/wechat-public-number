@@ -310,7 +310,7 @@ public class ThsMockTrade implements Trade
         }
     }
 
-    private StockCloseData getStockCloseData(String num)
+    public StockCloseData getStockCloseData(String num)
     {
         String stockCloseDataUrl = this.stockCloseDataUrl.replace("{num}", num);
         HttpResult result =
