@@ -62,7 +62,7 @@ public class MsgHandler extends AbstractHandler
             String num = stockBaseService.selectNumByName(content);
             if (StringUtils.isNotEmpty(num))
             {
-                StockCloseData stockCloseData = thsMockTrade.getStockCloseData(content);
+                StockCloseData stockCloseData = thsMockTrade.getStockCloseData(num);
                 if (null != stockCloseData)
                 {
                     return new TextBuilder().build(stockCloseData.getClosePrice() + "|" + stockCloseData.getChg(),

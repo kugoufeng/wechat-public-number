@@ -17,7 +17,7 @@ public class StockBaseService
 
     private static final String SELECT_BY_NUM = "select name from stock_base where num = ?";
 
-    private static final String SELECT_BY_NAME = "select num from stock_base where name like %?%";
+    private static final String SELECT_BY_NAME = "select num from stock_base where name like ?";
 
     public String selectNameByNum(String num)
     {
@@ -31,7 +31,7 @@ public class StockBaseService
     public String selectNumByName(String name)
     {
         List<String> numList = new ArrayList<>();
-        jdbcTemplate.query(SELECT_BY_NAME,new Object[]{name},resultSet -> {
+        jdbcTemplate.query(SELECT_BY_NAME,new Object[]{"'%"+name+"%'"},resultSet -> {
             numList.add(resultSet.getString(1));
         });
         if (numList.size() == 1)
