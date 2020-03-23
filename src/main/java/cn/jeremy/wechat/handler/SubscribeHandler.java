@@ -1,6 +1,7 @@
 package cn.jeremy.wechat.handler;
 
 import cn.jeremy.wechat.builder.TextBuilder;
+import cn.jeremy.wechat.service.ApiAuthorityService;
 import cn.jeremy.wechat.service.WxMpUserService;
 import java.util.Map;
 
@@ -18,46 +19,70 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
  * @author Binary Wang(https://github.com/binarywang)
  */
 @Component
-public class SubscribeHandler extends AbstractHandler {
+public class SubscribeHandler extends AbstractHandler
+{
 
     @Autowired
     WxMpUserService wxMpUserService;
 
+    @Autowired
+    ApiAuthorityService apiAuthorityService;
+
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
-                                    Map<String, Object> context, WxMpService weixinService,
-                                    WxSessionManager sessionManager) throws WxErrorException {
+        Map<String, Object> context, WxMpService weixinService,
+        WxSessionManager sessionManager)
+        throws WxErrorException
+    {
 
         this.logger.info("新关注用户 OPENID: " + wxMessage.getFromUser());
 
         // 获取微信用户基本信息
-        try {
+        try
+        {
             WxMpUser userWxInfo = weixinService.getUserService()
                 .userInfo(wxMessage.getFromUser(), null);
-            if (userWxInfo != null) {
+            if (userWxInfo != null)
+            {
                 wxMpUserService.insertOrUpdate(new cn.jeremy.wechat.entity.WxMpUser(userWxInfo));
+                cn.jeremy.wechat.entity.WxMpUser wxMpUser =
+                    wxMpUserService.selectByOpenIdAndUnionId(userWxInfo.getOpenId(), userWxInfo.getUnionId());
+                if (null != wxMpUser)
+                {
+                    apiAuthorityService.initUserApiAuthority(wxMpUser.getId());
+                }
             }
-        } catch (WxErrorException e) {
-            if (e.getError().getErrorCode() == 48001) {
+
+        }
+        catch (WxErrorException e)
+        {
+            if (e.getError().getErrorCode() == 48001)
+            {
                 this.logger.info("该公众号没有获取用户信息权限！");
             }
         }
 
-
         WxMpXmlOutMessage responseResult = null;
-        try {
+        try
+        {
             responseResult = this.handleSpecial(wxMessage);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             this.logger.error(e.getMessage(), e);
         }
 
-        if (responseResult != null) {
+        if (responseResult != null)
+        {
             return responseResult;
         }
 
-        try {
+        try
+        {
             return new TextBuilder().build("感谢关注", wxMessage, weixinService);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             this.logger.error(e.getMessage(), e);
         }
 
@@ -68,7 +93,8 @@ public class SubscribeHandler extends AbstractHandler {
      * 处理特殊请求，比如如果是扫码进来的，可以做相应处理
      */
     private WxMpXmlOutMessage handleSpecial(WxMpXmlMessage wxMessage)
-        throws Exception {
+        throws Exception
+    {
         //TODO
         return null;
     }

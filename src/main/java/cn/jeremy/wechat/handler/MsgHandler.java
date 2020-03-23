@@ -57,6 +57,21 @@ public class MsgHandler extends AbstractHandler
             }
         }
 
+        if (StringUtils.isNotEmpty(content))
+        {
+            String num = stockBaseService.selectNumByName(content);
+            if (StringUtils.isNotEmpty(num))
+            {
+                StockCloseData stockCloseData = thsMockTrade.getStockCloseData(content);
+                if (null != stockCloseData)
+                {
+                    return new TextBuilder().build(stockCloseData.getClosePrice() + "|" + stockCloseData.getChg(),
+                        wxMessage,
+                        weixinService);
+                }
+            }
+        }
+
         return new TextBuilder().build(content, wxMessage, weixinService);
 
     }

@@ -3,6 +3,7 @@ package cn.jeremy.wechat.service;
 import cn.jeremy.wechat.entity.ApiAuthority;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -79,6 +80,19 @@ public class ApiAuthorityService
         }
 
         return jdbcTemplate.update(DECR_LEFT_NUM, new Object[] {apiAuthority.getId()});
+    }
+
+    public void initUserApiAuthority(Integer userId)
+    {
+        for (Integer key : APIMAP.keySet())
+        {
+            ApiAuthority apiAuthority = selectByUserIdAndAPIType(userId, key);
+            if (null == apiAuthority)
+            {
+                insert(userId, key);
+            }
+        }
+
     }
 
 }
