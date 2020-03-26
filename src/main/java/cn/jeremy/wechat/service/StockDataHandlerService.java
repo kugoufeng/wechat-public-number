@@ -120,7 +120,7 @@ public class StockDataHandlerService
         jdbcTemplate.query(SELECT_MAX_DATE_DEMON_STOCK_SQL, new Object[] {}, resultSet -> {
             String num = resultSet.getString(2);
             String name = resultSet.getString(3);
-            Date date = new Date(resultSet.getDate(4).getTime());
+            Date date = new Date(resultSet.getDate(9).getTime());
             result.add(new DemonStock(name, num, date));
         });
         return result;

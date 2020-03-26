@@ -1,4 +1,4 @@
-package cn.jeremy.wechat.stock.bean;
+package cn.jeremy.wechat.entity;
 
 import cn.jeremy.common.utils.DateTools;
 import cn.jeremy.wechat.entity.BaseStockData;
