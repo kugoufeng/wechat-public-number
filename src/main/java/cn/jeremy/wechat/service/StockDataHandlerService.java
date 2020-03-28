@@ -50,10 +50,12 @@ public class StockDataHandlerService
     @Autowired
     WxMpMediaService wxMpMediaService;
 
+    @Autowired
+    DemonStockService demonStockService;
+
     private static final String FILE_NAME = "part-r-00000";
 
-    private static final String SELECT_MAX_DATE_DEMON_STOCK_SQL =
-        "SELECT * from `demon_stock` where select_date = (SELECT max(select_date) FROM `demon_stock`)";
+
 
     @Scheduled(cron = "0 35 18 ? * MON-FRI")
     public void importData()
@@ -76,7 +78,7 @@ public class StockDataHandlerService
      */
     public void uploadDemonStockMedia()
     {
-        List<DemonStock> demonStocks = queryNearestDemonStock();
+        List<DemonStock> demonStocks = demonStockService.queryNearestDemonStock();
         String filePath = genDemonStockPic(demonStocks);
         if (StringUtils.isNotEmpty(filePath))
         {
@@ -107,24 +109,7 @@ public class StockDataHandlerService
 
     }
 
-    /**
-     * 查询最近日期推荐的股票
-     *
-     * @return java.util.List<cn.jeremy.wechat.entity.SelectStockData>
-     * @throws
-     * @author fengjiangtao
-     */
-    public List<DemonStock> queryNearestDemonStock()
-    {
-        List<DemonStock> result = new ArrayList<>();
-        jdbcTemplate.query(SELECT_MAX_DATE_DEMON_STOCK_SQL, new Object[] {}, resultSet -> {
-            String num = resultSet.getString(2);
-            String name = resultSet.getString(3);
-            Date date = new Date(resultSet.getDate(9).getTime());
-            result.add(new DemonStock(name, num, date));
-        });
-        return result;
-    }
+
 
     /**
      * 生成图片

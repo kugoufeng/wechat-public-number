@@ -7,6 +7,7 @@ import cn.jeremy.common.utils.StringTools;
 import cn.jeremy.common.utils.bean.HttpResult;
 import cn.jeremy.wechat.entity.BaseStockData;
 import cn.jeremy.wechat.entity.StockCloseData;
+import cn.jeremy.wechat.service.StockCloseService.StockCloseRowCallBackHandler;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
@@ -434,22 +435,7 @@ public class ThsMockTrade implements Trade
     {
         String selectSql = String.format("select * from stock_%s ORDER BY today DESC", num);
         List<StockCloseData> baseStockDataList = new ArrayList<>();
-        jdbcTemplate.query(selectSql, new Object[] {}, (resultSet) ->
-        {
-            StockCloseData stockCloseData = new StockCloseData(resultSet.getDate(11));
-            stockCloseData.setNum(num);
-            stockCloseData.setName(name);
-            stockCloseData.setOpenPrice(resultSet.getInt(2));
-            stockCloseData.setTopPrice(resultSet.getInt(3));
-            stockCloseData.setLowPrice(resultSet.getInt(4));
-            stockCloseData.setYestClosePrice(resultSet.getInt(5));
-            stockCloseData.setClosePrice(resultSet.getInt(6));
-            stockCloseData.setChg(resultSet.getInt(7));
-            stockCloseData.setZlc(resultSet.getInt(8));
-            stockCloseData.setZlr(resultSet.getInt(9));
-            stockCloseData.setJe(resultSet.getInt(10));
-            baseStockDataList.add(stockCloseData);
-        });
+        jdbcTemplate.query(selectSql, new Object[] {}, new StockCloseRowCallBackHandler(baseStockDataList));
         baseStockDataList.forEach(s -> {
             s.setName(name);
             s.setNum(num);

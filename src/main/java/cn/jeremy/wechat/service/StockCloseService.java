@@ -2,11 +2,13 @@ package cn.jeremy.wechat.service;
 
 import cn.jeremy.wechat.entity.StockCloseData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,10 +30,34 @@ public class StockCloseService
     {
         String sql = String.format(SELECT_BY_DATE, num);
         List<StockCloseData> stockCloseDataList = new ArrayList<>();
-        jdbcTemplate.query(sql, new Object[] {date}, resultSet -> {
+        jdbcTemplate.query(sql, new Object[] {date}, new StockCloseRowCallBackHandler(stockCloseDataList));
+        stockCloseDataList.forEach(s -> {
+            s.setName(name);
+            s.setNum(num);
+        });
+        if (stockCloseDataList.size() > 0)
+        {
+            return stockCloseDataList;
+        }
+
+        return null;
+    }
+
+    public static class StockCloseRowCallBackHandler implements RowCallbackHandler
+    {
+        private List<StockCloseData> stockCloseDataList;
+
+        public StockCloseRowCallBackHandler(List<StockCloseData> stockCloseDataList)
+        {
+            this.stockCloseDataList = stockCloseDataList;
+        }
+
+        @Override
+        public void processRow(ResultSet resultSet)
+            throws SQLException
+        {
             StockCloseData stockCloseData = new StockCloseData(resultSet.getDate(11));
-            stockCloseData.setNum(num);
-            stockCloseData.setName(name);
+            stockCloseData.setId(resultSet.getInt(1));
             stockCloseData.setOpenPrice(resultSet.getInt(2));
             stockCloseData.setTopPrice(resultSet.getInt(3));
             stockCloseData.setLowPrice(resultSet.getInt(4));
@@ -42,12 +68,6 @@ public class StockCloseService
             stockCloseData.setZlr(resultSet.getInt(9));
             stockCloseData.setJe(resultSet.getInt(10));
             stockCloseDataList.add(stockCloseData);
-        });
-        if (stockCloseDataList.size() > 0)
-        {
-            return stockCloseDataList;
         }
-
-        return null;
     }
 }

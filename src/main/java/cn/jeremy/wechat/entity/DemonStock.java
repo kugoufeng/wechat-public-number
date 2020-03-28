@@ -9,18 +9,23 @@ import java.util.Date;
 public class DemonStock extends BaseStockData {
 
     /** 潜伏天数 */
+    @JSONField(serialize = false)
     private int day;
 
     /** 潜伏期内总的涨跌幅 */
+    @JSONField(serialize = false)
     private int chg;
 
     /** 潜伏期内总的资金净额 */
+    @JSONField(serialize = false)
     private int je;
 
     /** 选中当天涨跌幅 */
+    @JSONField(serialize = false)
     private int selectChg;
 
     /** 选中当天资金净额 */
+    @JSONField(serialize = false)
     private int selectJe;
 
 

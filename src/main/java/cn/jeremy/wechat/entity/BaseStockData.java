@@ -1,10 +1,12 @@
 package cn.jeremy.wechat.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class BaseStockData
 {
+    @JSONField(serialize = false)
     private Integer id;
     /**
      * 股票名称
