@@ -433,7 +433,7 @@ public class ThsMockTrade implements Trade
 
     public void genStockDayReport(String num, String name)
     {
-        String selectSql = String.format("select * from stock_%s ORDER BY today DESC", num);
+        String selectSql = String.format("select * from stock_%s ORDER BY today DESC limit 20", num);
         List<StockCloseData> baseStockDataList = new ArrayList<>();
         jdbcTemplate.query(selectSql, new Object[] {}, new StockCloseRowCallBackHandler(baseStockDataList));
         baseStockDataList.forEach(s -> {

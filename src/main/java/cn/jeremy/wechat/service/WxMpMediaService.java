@@ -19,6 +19,9 @@ public class WxMpMediaService
 
     private static final String SELECT_BY_NAME = "select * from wx_mp_media where name = ?";
 
+    private static final String UPDATE_BY_ID =
+        "update wx_mp_media set name = ?, type = ?, media_id = ?, create_time = ?, expire_time = ? where id = ?";
+
     public int insert(WxMpMedia wxMpMedia)
     {
         jdbcTemplate.update(DELETE_BY_NAME, new Object[] {wxMpMedia.getName()});
@@ -47,6 +50,13 @@ public class WxMpMediaService
             return wxMpMedia;
         }
         return null;
+    }
+
+    public int updateById(WxMpMedia wxMpMedia)
+    {
+        return jdbcTemplate.update(UPDATE_BY_ID,
+            new Object[] {wxMpMedia.getName(), wxMpMedia.getType(), wxMpMedia.getMediaId(), wxMpMedia.getCreateTime(),
+                wxMpMedia.getExpireTime(), wxMpMedia.getId()});
     }
 
 }

@@ -49,17 +49,23 @@ public class DemonStockService
     }
 
     /**
-     * 查询上月的推荐数据
+     * 查询其它月的推荐数据
      *
+     * @param offset 月份偏移量
      * @return java.util.List<cn.jeremy.wechat.entity.DemonStock>
      * @throws
      * @author fengjiangtao
      */
-    public List<DemonStock> queryLastMonthData()
+    public List<DemonStock> queryOtherMonthData(int offset)
     {
+        if (offset >= 0)
+        {
+            return null;
+        }
         Date currentMonthDate =
             DateTools.timeStr2Date(DateTools.getCurrentDate(DateTools.DATE_FORMAT_7), DateTools.DATE_FORMAT_7);
-        String lastMonth = DateTools.addDate(currentMonthDate.getTime(), -1, DateTools.MONTH, DateTools.DATE_FORMAT_7);
+        String lastMonth =
+            DateTools.addDate(currentMonthDate.getTime(), offset, DateTools.MONTH, DateTools.DATE_FORMAT_7);
         return queryDemonStocksByMonth(lastMonth);
     }
 

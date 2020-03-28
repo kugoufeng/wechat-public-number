@@ -1,9 +1,11 @@
 package cn.jeremy.wechat.controller;
 
 import cn.jeremy.wechat.service.ApiAuthorityService;
+import cn.jeremy.wechat.service.DemonStockService;
 import cn.jeremy.wechat.service.StockDataHandlerService;
 import cn.jeremy.wechat.stock.ThsMockTrade;
 import cn.jeremy.wechat.entity.DemonStock;
+import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,9 @@ public class StockController
 
     @Autowired
     ApiAuthorityService apiAuthorityService;
+
+    @Autowired
+    DemonStockService demonStockService;
 
     @RequestMapping(value = "/updateAMarkStocks", method = RequestMethod.GET)
     public String updateAMarkStocks()
@@ -64,13 +69,13 @@ public class StockController
     @RequestMapping(value = "/queryNearestDemonStock", method = RequestMethod.GET)
     public List<DemonStock> queryNearestDemonStock()
     {
-        return stockDataHandlerService.queryNearestDemonStock();
+        return demonStockService.queryNearestDemonStock();
     }
 
     @RequestMapping(value = "/genDemonStockPic", method = RequestMethod.GET)
     public String genDemonStockPic()
     {
-        List<DemonStock> demonStockData = stockDataHandlerService.queryNearestDemonStock();
+        List<DemonStock> demonStockData = demonStockService.queryNearestDemonStock();
         return stockDataHandlerService.genDemonStockPic(demonStockData);
     }
 
@@ -79,6 +84,13 @@ public class StockController
     {
         int count = apiAuthorityService.addLeftNum(userId, 1);
         return count == 1 ? "success" : "failed";
+    }
+
+    @RequestMapping(value = "/uploadDemonStockHistoryMedia", method = RequestMethod.GET)
+    public String uploadDemonStockHistoryMedia()
+    {
+        stockDataHandlerService.uploadDemonStockHistoryMedia();
+        return "success";
     }
 
 }

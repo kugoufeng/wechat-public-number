@@ -21,10 +21,14 @@ import org.springframework.stereotype.Service;
 public class StockCloseService
 {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    private final static String SELECT_BY_DATE = "select * from stock_%s where today > ? order by today limit 5";
+    public StockCloseService(JdbcTemplate jdbcTemplate)
+    {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private final static String SELECT_BY_DATE = "select * from stock_%s where today > ? order by today limit 6";
 
     public List<StockCloseData> selectByDate(Date date, String num, String name)
     {

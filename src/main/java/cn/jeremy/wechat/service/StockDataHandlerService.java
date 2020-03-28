@@ -2,7 +2,11 @@ package cn.jeremy.wechat.service;
 
 import cn.jeremy.common.utils.DateTools;
 import cn.jeremy.common.utils.FileUtil;
+import cn.jeremy.wechat.bean.DemonStockHistory;
+import cn.jeremy.wechat.bean.DemonStockHistory.DemonStockBuyElement;
+import cn.jeremy.wechat.bean.DemonStockHistory.DemonStockSellElement;
 import cn.jeremy.wechat.entity.DemonStock;
+import cn.jeremy.wechat.entity.StockCloseData;
 import cn.jeremy.wechat.entity.WxMpMedia;
 import cn.jeremy.wechat.text.ContinuousStockFundMrTextToDB;
 import cn.jeremy.wechat.text.DemonStockMrTextToDB;
@@ -19,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.material.WxMpMaterial;
+import me.chanjar.weixin.mp.bean.material.WxMpMaterialUploadResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,24 +44,31 @@ public class StockDataHandlerService
     @Value("${file.download.basepath}")
     private String basePath;
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    PhantomjsService phantomjsService;
+    private final PhantomjsService phantomjsService;
 
-    @Autowired
-    WxMpService wxService;
+    private final WxMpService wxService;
 
-    @Autowired
-    WxMpMediaService wxMpMediaService;
+    private final WxMpMediaService wxMpMediaService;
 
-    @Autowired
-    DemonStockService demonStockService;
+    private final DemonStockService demonStockService;
+
+    private final StockCloseService stockCloseService;
+
+    public StockDataHandlerService(JdbcTemplate jdbcTemplate, PhantomjsService phantomjsService,
+        WxMpService wxService, WxMpMediaService wxMpMediaService,
+        DemonStockService demonStockService, StockCloseService stockCloseService)
+    {
+        this.jdbcTemplate = jdbcTemplate;
+        this.phantomjsService = phantomjsService;
+        this.wxService = wxService;
+        this.wxMpMediaService = wxMpMediaService;
+        this.demonStockService = demonStockService;
+        this.stockCloseService = stockCloseService;
+    }
 
     private static final String FILE_NAME = "part-r-00000";
-
-
 
     @Scheduled(cron = "0 35 18 ? * MON-FRI")
     public void importData()
@@ -67,6 +80,180 @@ public class StockDataHandlerService
             uploadDemonStockMedia();
         }
         new ContinuousStockFundMrTextToDB(date, jdbcTemplate, basePath).execInsertDB();
+    }
+
+    /**
+     * 统计当月或者其它月份推荐的妖股数据
+     *
+     * @param monthOffset
+     * @return java.util.List<cn.jeremy.wechat.bean.DemonStockHistory>
+     * @throws
+     * @author fengjiangtao
+     */
+    public List<DemonStockHistory> queryDemonStockHistory(int monthOffset)
+    {
+        List<DemonStock> demonStocks;
+        if (monthOffset >= 0)
+        {
+            demonStocks = demonStockService.queryCurrentMonthData();
+        }
+        else
+        {
+            demonStocks = demonStockService.queryOtherMonthData(monthOffset);
+        }
+        if (CollectionUtils.isEmpty(demonStocks))
+        {
+            return null;
+        }
+        List<DemonStockHistory> result = new ArrayList<>();
+        demonStocks.forEach(demonStock -> {
+            List<StockCloseData> stockCloseDataList =
+                stockCloseService.selectByDate(demonStock.getSelectDate(), demonStock.getNum(), demonStock.getName());
+            if (CollectionUtils.isEmpty(stockCloseDataList) || stockCloseDataList.size() < 2)
+            {
+                return;
+            }
+            StockCloseData stockCloseData = stockCloseDataList.get(0);
+            DemonStockHistory demonStockHistory =
+                new DemonStockHistory(demonStock.getName(), demonStock.getNum(), demonStock.getSelectDate());
+            DemonStockBuyElement demonStockBuyElement = new DemonStockBuyElement(stockCloseData.getOpenPrice(),
+                stockCloseData.getTopPrice(),
+                stockCloseData.getLowPrice(),
+                stockCloseData.getClosePrice(),
+                stockCloseData.getChg());
+            demonStockHistory.setDemonStockBuyElement(demonStockBuyElement);
+            stockCloseDataList.remove(stockCloseData);
+            List<DemonStockSellElement> demonStockSellElements = new ArrayList<>(stockCloseDataList.size());
+            for (StockCloseData closeData : stockCloseDataList)
+            {
+                DemonStockSellElement demonStockSellElement = new DemonStockSellElement(closeData.getOpenPrice(),
+                    closeData.getTopPrice(),
+                    closeData.getLowPrice(),
+                    closeData.getClosePrice(),
+                    demonStockBuyElement.getAvgPrice(),
+                    demonStockBuyElement.getTotalPositions());
+                demonStockSellElements.add(demonStockSellElement);
+            }
+            demonStockHistory.setDemonStockSellElements(demonStockSellElements);
+            result.add(demonStockHistory);
+        });
+        return result;
+    }
+
+    /**
+     * 上传demon-stock-history图片到微信服务号的临时素材中 如果当前月已经过了10天，则上传上个月的图片到永久素材中，不在更新
+     *
+     * @return
+     * @throws
+     * @author fengjiangtao
+     */
+    public void uploadDemonStockHistoryMedia()
+    {
+        Date date = new Date();
+        String base_media_name = "demon-stock-history-";
+        int dayOfMonth = DateTools.getDayOfMonth(date);
+        String lastMonth = DateTools.addDate(date.getTime(), -1, DateTools.MONTH, DateTools.DATE_FORMAT_7);
+        String lastMonthName = base_media_name.concat(lastMonth);
+        String currentMonth = DateTools.format(date, DateTools.DATE_FORMAT_7);
+        String currentMonthName = base_media_name.concat(currentMonth);
+        if (dayOfMonth >= 10)
+        {
+            WxMpMedia wxMpMedia = wxMpMediaService.queryByName(lastMonthName);
+            //不是永久素材
+            if (null != wxMpMedia && wxMpMedia.getExpireTime() != null)
+            {
+                List<DemonStockHistory> demonStockHistories = queryDemonStockHistory(-1);
+                String filePath = genDemonStockHistoryPic(demonStockHistories);
+                if (null != filePath)
+                {
+                    File file = new File(filePath);
+                    WxMpMaterial wxMaterial = new WxMpMaterial();
+                    wxMaterial.setFile(file);
+                    wxMaterial.setName(file.getName());
+                    try
+                    {
+                        WxMpMaterialUploadResult result =
+                            wxService.getMaterialService().materialFileUpload("image", wxMaterial);
+                        wxMpMedia.setMediaId(result.getMediaId());
+                        wxMpMedia.setCreateTime(date);
+                        wxMpMediaService.updateById(wxMpMedia);
+                    }
+                    catch (WxErrorException e)
+                    {
+                        log.error("uploadDemonStockHistoryMedia has error, e:{}", e);
+                    }
+                    finally
+                    {
+                        FileUtil.deleteFile(file);
+                    }
+                }
+            }
+        }
+        else
+        {
+            List<DemonStockHistory> demonStockHistories = queryDemonStockHistory(-1);
+            String filePath = genDemonStockHistoryPic(demonStockHistories);
+            if (null != filePath)
+            {
+                File file = new File(filePath);
+                try
+                {
+                    WxMediaUploadResult result = wxService.getMaterialService().mediaUpload("image", file);
+                    if (null != result)
+                    {
+                        WxMpMedia wxMpMedia = new WxMpMedia();
+                        wxMpMedia.setName(lastMonthName);
+                        wxMpMedia.setType(result.getType());
+                        wxMpMedia.setMediaId(result.getMediaId());
+                        wxMpMedia.setCreateTime(new Date(result.getCreatedAt() * 1000));
+                        wxMpMedia.setExpireTime(new Date(DateTools.addDate(result.getCreatedAt() * 1000,
+                            3,
+                            DateTools.DAY)));
+                        wxMpMediaService.insert(wxMpMedia);
+                    }
+                }
+                catch (WxErrorException e)
+                {
+                    log.error("uploadDemonStockHistoryMedia has error, e:{}", e);
+                }
+                finally
+                {
+                    FileUtil.deleteFile(file);
+                }
+            }
+        }
+
+        List<DemonStockHistory> demonStockHistories = queryDemonStockHistory(0);
+        String filePath = genDemonStockHistoryPic(demonStockHistories);
+        if (null != filePath)
+        {
+            File file = new File(filePath);
+            try
+            {
+                WxMediaUploadResult result = wxService.getMaterialService().mediaUpload("image", file);
+                if (null != result)
+                {
+                    WxMpMedia wxMpMedia = new WxMpMedia();
+                    wxMpMedia.setName(currentMonthName);
+                    wxMpMedia.setType(result.getType());
+                    wxMpMedia.setMediaId(result.getMediaId());
+                    wxMpMedia.setCreateTime(new Date(result.getCreatedAt() * 1000));
+                    wxMpMedia.setExpireTime(new Date(DateTools.addDate(result.getCreatedAt() * 1000,
+                        3,
+                        DateTools.DAY)));
+                    wxMpMediaService.insert(wxMpMedia);
+                }
+            }
+            catch (WxErrorException e)
+            {
+                log.error("uploadDemonStockHistoryMedia has error, e:{}", e);
+            }
+            finally
+            {
+                FileUtil.deleteFile(file);
+            }
+        }
+
     }
 
     /**
@@ -92,8 +279,10 @@ public class StockDataHandlerService
                     wxMpMedia.setName("nearest-demon-stock");
                     wxMpMedia.setType(result.getType());
                     wxMpMedia.setMediaId(result.getMediaId());
-                    wxMpMedia.setCreateTime(new Date(result.getCreatedAt()*1000));
-                    wxMpMedia.setExpireTime(new Date(DateTools.addDate(result.getCreatedAt()*1000, 3, DateTools.DAY)));
+                    wxMpMedia.setCreateTime(new Date(result.getCreatedAt() * 1000));
+                    wxMpMedia.setExpireTime(new Date(DateTools.addDate(result.getCreatedAt() * 1000,
+                        3,
+                        DateTools.DAY)));
                     wxMpMediaService.insert(wxMpMedia);
                 }
             }
@@ -109,8 +298,6 @@ public class StockDataHandlerService
 
     }
 
-
-
     /**
      * 生成图片
      *
@@ -123,7 +310,24 @@ public class StockDataHandlerService
         {
             Map<String, String> params = new HashMap<>();
             params.put("data", JSONObject.toJSONString(result));
-            return phantomjsService.genPic("demon-stock", 750, result.size() * 50 + 90, params);
+            return phantomjsService.genPic("demon-stock", 750, (result.size() + 1) * 50 + 210, params);
+        }
+        return null;
+    }
+
+    /**
+     * 生成图片
+     *
+     * @param result
+     * @return
+     */
+    public String genDemonStockHistoryPic(List<DemonStockHistory> result)
+    {
+        if (!CollectionUtils.isEmpty(result))
+        {
+            Map<String, String> params = new HashMap<>();
+            params.put("data", JSONObject.toJSONString(result));
+            return phantomjsService.genPic("demon-stock-history", 750, (result.size() + 1) * 50 + 210, params);
         }
         return null;
     }
