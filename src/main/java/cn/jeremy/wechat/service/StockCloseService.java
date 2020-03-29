@@ -30,6 +30,8 @@ public class StockCloseService
 
     private final static String SELECT_BY_DATE = "select * from stock_%s where today > ? order by today limit 6";
 
+    private final static String SELECT_MAX_DATE = "select max(today) from stock_000001";
+
     public List<StockCloseData> selectByDate(Date date, String num, String name)
     {
         String sql = String.format(SELECT_BY_DATE, num);
@@ -45,6 +47,11 @@ public class StockCloseService
         }
 
         return null;
+    }
+
+    public Date selectMaxDate()
+    {
+        return jdbcTemplate.queryForObject(SELECT_MAX_DATE, Date.class);
     }
 
     public static class StockCloseRowCallBackHandler implements RowCallbackHandler

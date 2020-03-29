@@ -24,7 +24,7 @@ public class WxMpMediaService
 
     public int insert(WxMpMedia wxMpMedia)
     {
-        jdbcTemplate.update(DELETE_BY_NAME, new Object[] {wxMpMedia.getName()});
+        delByName(wxMpMedia.getName());
         return jdbcTemplate.update(INSERT_SQL,
             new Object[] {wxMpMedia.getName(), wxMpMedia.getType(), wxMpMedia.getMediaId(), wxMpMedia.getCreateTime(),
                 wxMpMedia.getExpireTime()});
@@ -57,6 +57,11 @@ public class WxMpMediaService
         return jdbcTemplate.update(UPDATE_BY_ID,
             new Object[] {wxMpMedia.getName(), wxMpMedia.getType(), wxMpMedia.getMediaId(), wxMpMedia.getCreateTime(),
                 wxMpMedia.getExpireTime(), wxMpMedia.getId()});
+    }
+
+    public int delByName(String name)
+    {
+       return jdbcTemplate.update(DELETE_BY_NAME, new Object[] {name});
     }
 
 }

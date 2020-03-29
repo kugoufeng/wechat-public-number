@@ -1,22 +1,21 @@
 package cn.jeremy.wechat.controller;
 
+import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
+
+import java.net.MalformedURLException;
 import lombok.AllArgsConstructor;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.menu.WxMenu;
 import me.chanjar.weixin.common.bean.menu.WxMenuButton;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.menu.WxMpGetSelfMenuInfoResult;
 import me.chanjar.weixin.mp.bean.menu.WxMpMenu;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static me.chanjar.weixin.common.api.WxConsts.MenuButtonType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Binary Wang(https://github.com/binarywang)
@@ -55,55 +54,28 @@ public class WxMenuController
         button1.setName("最近推荐");
         button1.setKey("demon_stock");
 
-//        WxMenuButton button2 = new WxMenuButton();
-//        button2.setType(WxConsts.BUTTON_MINIPROGRAM);
-//        button2.setName("小程序");
-//        button2.setAppId("wx286b93c14bbf93aa");
-//        button2.setPagePath("pages/lunar/index.html");
-//        button2.setUrl("http://mp.weixin.qq.com");
-
-//        WxMenuButton button3 = new WxMenuButton();
-//        button3.setName("菜单");
+        WxMenuButton button3 = new WxMenuButton();
+        button3.setName("菜单");
 
         menu.getButtons().add(button1);
-//        menu.getButtons().add(button2);
-        //   menu.getButtons().add(button3);
+        menu.getButtons().add(button3);
 
-//        WxMenuButton button31 = new WxMenuButton();
-//        button31.setType(MenuButtonType.VIEW);
-//        button31.setName("搜索");
-//        button31.setUrl("http://www.soso.com/");
-//
-//        WxMenuButton button32 = new WxMenuButton();
-//        button32.setType(MenuButtonType.VIEW);
-//        button32.setName("视频");
-//        button32.setUrl("http://v.qq.com/");
-//
-//        WxMenuButton button33 = new WxMenuButton();
-//        button33.setType(MenuButtonType.CLICK);
-//        button33.setName("赞一下我们");
-//        button33.setKey("V1001_GOOD");
-//
-//        WxMenuButton button34 = new WxMenuButton();
-//        button34.setType(MenuButtonType.VIEW);
-//        button34.setName("获取用户信息");
-//
-//        ServletRequestAttributes servletRequestAttributes =
-//            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        if (servletRequestAttributes != null) {
-//            HttpServletRequest request = servletRequestAttributes.getRequest();
-//            URL requestURL = new URL(request.getRequestURL().toString());
-//            String url = this.wxService.switchoverTo(appid).oauth2buildAuthorizationUrl(
-//                String.format("%s://%s/wx/redirect/%s/greet", requestURL.getProtocol(), requestURL.getHost(), appid),
-//                WxConsts.OAuth2Scope.SNSAPI_USERINFO, null);
-//            button34.setUrl(url);
-//        }
-//
-//        button3.getSubButtons().add(button31);
-//        button3.getSubButtons().add(button32);
-//        button3.getSubButtons().add(button33);
-//        button3.getSubButtons().add(button34);
+        WxMenuButton button31 = new WxMenuButton();
+        button31.setType(MenuButtonType.CLICK);
+        button31.setName("本月记录");
+        button31.setKey("demon_stock_history");
+        WxMenuButton button32 = new WxMenuButton();
+        button32.setType(MenuButtonType.CLICK);
+        button32.setName("上月记录");
+        button32.setKey("demon_stock_history_last");
+        WxMenuButton button33 = new WxMenuButton();
+        button33.setType(MenuButtonType.CLICK);
+        button33.setName("今日策略");
+        button33.setKey("stock_positions");
 
+        button3.getSubButtons().add(button31);
+        button3.getSubButtons().add(button32);
+        button3.getSubButtons().add(button33);
         this.wxService.switchover(appid);
         return this.wxService.getMenuService().menuCreate(menu);
     }
