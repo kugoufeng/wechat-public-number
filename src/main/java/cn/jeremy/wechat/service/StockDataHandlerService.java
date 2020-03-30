@@ -403,7 +403,7 @@ public class StockDataHandlerService
         {
             Map<String, String> params = new HashMap<>();
             params.put("data", JSONObject.toJSONString(result));
-            return phantomjsService.genPic("demon-stock", 750, (result.size() + 1) * 50 + 210, params);
+            return phantomjsService.genPic("demon-stock", String.valueOf(750), String.valueOf((result.size() + 1) * 50 + 210), params);
         }
         return null;
     }
@@ -420,7 +420,15 @@ public class StockDataHandlerService
         {
             Map<String, String> params = new HashMap<>();
             params.put("data", JSONObject.toJSONString(result));
-            return phantomjsService.genPic("demon-stock-history", 750, (result.size() + 1) * 50 + 210, params);
+            int size = 0;
+            for (DemonStockHistory demonStockHistory : result)
+            {
+                size += demonStockHistory.getName().length();
+            }
+            return phantomjsService.genPic("demon-stock-history",
+                String.valueOf(750),
+                String.valueOf((result.size() * 4.6 + size * 14.5 + 270)),
+                params);
         }
         return null;
     }
@@ -437,7 +445,10 @@ public class StockDataHandlerService
         {
             Map<String, String> params = new HashMap<>();
             params.put("data", JSONObject.toJSONString(result));
-            return phantomjsService.genPic("today-buy-positions", 750, (result.size() + 1) * 50 + 210, params);
+            return phantomjsService.genPic("today-buy-positions",
+                String.valueOf(750),
+                String.valueOf((result.size() + 1) * 50 + 210),
+                params);
         }
         return null;
     }

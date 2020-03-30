@@ -29,7 +29,7 @@ public class PhantomjsService
      * @throws
      * @author fengjiangtao
      */
-    public String genPic(String htmlTag, int width, int height, Map<String, String> params)
+    public String genPic(String htmlTag, String width, String height, Map<String, String> params)
     {
         String fileName = UUID.randomUUID().toString().concat(".jpg");
         String filePath = tempPath.concat(fileName);

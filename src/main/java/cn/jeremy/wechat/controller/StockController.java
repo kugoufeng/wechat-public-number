@@ -93,4 +93,10 @@ public class StockController
         return "success";
     }
 
+    @RequestMapping(value = "/queryDemonStockHistory", method = RequestMethod.GET)
+    public String queryDemonStockHistory()
+    {
+        return JSONObject.toJSONString(stockDataHandlerService.queryDemonStockHistory(0));
+    }
+
 }
